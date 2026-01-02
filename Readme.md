@@ -40,6 +40,8 @@ This structure strictly reflects the **behaviour modelling and flow diagram prop
 ---
 
 ## 🏗️ Project Structure
+
+```text
 SPADE/
 │
 ├── study_planner/
@@ -68,6 +70,7 @@ SPADE/
 ├── requirements.txt
 └── README.md
 
+```
 
 ---
 
