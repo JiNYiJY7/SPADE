@@ -276,20 +276,20 @@ python -m py_compile study_planner/run_spade_demo.py
 # Check imports
 python -c "from study_planner.spade_agent import StudyPlannerAgent"
 
-```
+```bash
 # Run demo
 python -m study_planner.run_spade_demo
 ```
-```
+
+```bash
 # Test with progress
 python -m study_planner.run_spade_demo --progress
 ```
-```
+
+```bash
 # tests
 pytest tests/ -v
 ```
-
----
 
 ## Future Extensions
 
