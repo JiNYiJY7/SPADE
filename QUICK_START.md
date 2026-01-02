@@ -4,7 +4,7 @@
 
 ### Run the Demo
 ```bash
-cd "C:\Users\USER\Desktop\FTMK-BITI\SEM 1 YEAR 3 2425\IA\SPADE2\SPADE"
+cd "Your Path"
 python -m study_planner.run_spade_demo
 ```
 
