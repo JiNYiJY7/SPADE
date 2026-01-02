@@ -1,4 +1,0 @@
-[
-  "tests/test_priority.py::test_priority_deadline_closer_higher",
-  "tests/test_scheduler.py::test_scheduler_sessions_within_slot"
-]
