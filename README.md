@@ -276,13 +276,16 @@ python -m py_compile study_planner/run_spade_demo.py
 # Check imports
 python -c "from study_planner.spade_agent import StudyPlannerAgent"
 
+```
 # Run demo
 python -m study_planner.run_spade_demo
-
+```
+```
 # Test with progress
 python -m study_planner.run_spade_demo --progress
-
-# Phase 2 compatibility
+```
+```
+# tests
 pytest tests/ -v
 ```
 
