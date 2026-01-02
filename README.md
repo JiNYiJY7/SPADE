@@ -87,18 +87,19 @@ This approach is consistent with the Phase 2 requirement that **simulation is ac
 ---
 
 ## ▶️ How to Run the Agent
-
 ### 1. Install dependencies
-```bash
+
+#```bash
 pip install -r requirements.txt
 
 ```
 
+##Run the agent (default demo input)
 ```bash
 python -m study_planner.main
 
 ```
-
+###Run unit tests
 ```bash
 pytest -q
 
