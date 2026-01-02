@@ -94,13 +94,13 @@ pip install -r requirements.txt
 
 ```
 
-##Run the agent (default demo input)
+### Run the agent (default demo input)
 ```bash
 python -m study_planner.main
 
 ```
 
-###Run unit tests
+### Run unit tests
 ```bash
 pytest -q
 
