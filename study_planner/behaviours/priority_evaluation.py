@@ -9,7 +9,7 @@ from ..utils.scoring import priority_score
 def rank_tasks(memory: AgentMemory, now: datetime) -> List[Task]:
     ranked = sorted(
         memory.tasks.values(),
-        key=lambda t: priority_score(t, now),
+        key=lambda task: priority_score(task, now),
         reverse=True,
     )
     memory.log("Ranked tasks by priority score")
