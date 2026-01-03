@@ -14,12 +14,12 @@ def reminder_level(hours_left: float) -> str:
     return "INFO (every few days)"
 
 
-def generate_reminders(tasks_sorted: List[Task], now: datetime) -> List[str]:
+def generate_reminders(tasks_sorted: List[Task], current_time: datetime) -> List[str]:
     reminders = []
     for task in tasks_sorted:
         if task.remaining_minutes <= 0:
             continue
-        hours_left = (task.due - now).total_seconds() / 3600.0
+        hours_left = (task.due - current_time).total_seconds() / 3600.0
         reminder_level_str = reminder_level(hours_left)
         reminders.append(
             f"[{reminder_level_str}] {task.title} | due in {hours_left:.1f}h | remaining {task.remaining_minutes}min"
