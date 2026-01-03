@@ -102,8 +102,8 @@ class PriorityEvaluationBehaviour(OneShotBehaviour):
         
         memory.log("[PriorityEvaluationBehaviour] Priority evaluation complete")
         print(f"[AGENT] Ranked {len(ranked_tasks)} tasks by priority")
-        for i, task in enumerate(ranked_tasks[:3], 1):
-            print(f"  {i}. {task.title} (importance={task.importance})")
+        for index, task in enumerate(ranked_tasks[:3], 1):
+            print(f"  {index}. {task.title} (importance={task.importance})")
 
 
 class SchedulePlanningBehaviour(OneShotBehaviour):
