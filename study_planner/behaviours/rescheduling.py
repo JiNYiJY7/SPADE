@@ -5,8 +5,8 @@ from ..behaviours.priority_evaluation import rank_tasks
 from ..behaviours.schedule_planning import build_plan
 
 
-def reschedule(memory: AgentMemory, now: datetime):
-    tasks_sorted = rank_tasks(memory, now)
-    plan = build_plan(memory, tasks_sorted, now)
+def reschedule(memory: AgentMemory, current_time: datetime):
+    tasks_sorted = rank_tasks(memory, current_time)
+    plan = build_plan(memory, tasks_sorted, current_time)
     memory.log("Rescheduling completed")
     return plan
