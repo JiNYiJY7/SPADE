@@ -55,7 +55,7 @@ def main():
     args = parser.parse_args()
 
     memory = AgentMemory()
-    now = datetime.now()
+    current_time = datetime.now()
 
     # Load data
     if args.input:
@@ -77,20 +77,20 @@ def main():
     set_free_slots(memory, data["free_slots"])
 
     # Initial plan
-    tasks_sorted = rank_tasks(memory, now)
-    plan = build_plan(memory, tasks_sorted, now)
+    tasks_sorted = rank_tasks(memory, current_time)
+    plan = build_plan(memory, tasks_sorted, current_time)
 
     # Optional progress update
     if args.progress_task_id and args.progress_minutes > 0:
         mark_progress(memory, args.progress_task_id, args.progress_minutes)
         if args.reschedule:
-            plan = reschedule(memory, now)
-            tasks_sorted = rank_tasks(memory, now)
+            plan = reschedule(memory, current_time)
+            tasks_sorted = rank_tasks(memory, current_time)
 
     # Output
     print_ranked(tasks_sorted)
     print_plan(plan)
-    reminders = generate_reminders(tasks_sorted, now)
+    reminders = generate_reminders(tasks_sorted, current_time)
     print_reminders(reminders)
     print_logs(memory)
 
