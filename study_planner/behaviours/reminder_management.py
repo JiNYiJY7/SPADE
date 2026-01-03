@@ -16,12 +16,12 @@ def reminder_level(hours_left: float) -> str:
 
 def generate_reminders(tasks_sorted: List[Task], now: datetime) -> List[str]:
     reminders = []
-    for t in tasks_sorted:
-        if t.remaining_minutes <= 0:
+    for task in tasks_sorted:
+        if task.remaining_minutes <= 0:
             continue
-        hours_left = (t.due - now).total_seconds() / 3600.0
-        lvl = reminder_level(hours_left)
+        hours_left = (task.due - now).total_seconds() / 3600.0
+        reminder_level_str = reminder_level(hours_left)
         reminders.append(
-            f"[{lvl}] {t.title} | due in {hours_left:.1f}h | remaining {t.remaining_minutes}min"
+            f"[{reminder_level_str}] {task.title} | due in {hours_left:.1f}h | remaining {task.remaining_minutes}min"
         )
     return reminders
