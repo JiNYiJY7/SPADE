@@ -3,9 +3,9 @@ from datetime import datetime
 from typing import Any
 
 
-def parse_iso(dt: str) -> datetime:
+def parse_iso(iso_string: str) -> datetime:
     # Accepts ISO8601 without timezone. Example: "2026-01-05T23:59:00"
-    return datetime.fromisoformat(dt)
+    return datetime.fromisoformat(iso_string)
 
 
 def now_local() -> datetime:
