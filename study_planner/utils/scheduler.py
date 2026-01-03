@@ -20,44 +20,44 @@ def plan_sessions(
     - Insert short breaks
     """
     sessions: List[StudySession] = []
-    remaining: Dict[str, int] = {t.id: t.remaining_minutes for t in tasks_sorted}
+    remaining: Dict[str, int] = {task.id: task.remaining_minutes for task in tasks_sorted}
 
     for slot in free_slots:
-        cursor = max(slot.start, now)
-        slot_end = slot.end
+        slot_cursor = max(slot.start, now)
+        slot_end_time = slot.end
 
         while cursor < slot_end:
             # pick first task with remaining time
             pick = None
-            for t in tasks_sorted:
-                if remaining[t.id] > 0:
-                    pick = t
+            for task in tasks_sorted:
+                if remaining[task.id] > 0:
+                    current_task = task
                     break
-            if pick is None:
+            if current_task is None:
                 break
 
-            available_minutes = int((slot_end - cursor).total_seconds() // 60)
+            available_minutes = int((slot_end_time - slot_cursor).total_seconds() // 60)
             if available_minutes < min_session_minutes:
                 break
 
-            study_minutes = min(chunk_minutes, remaining[pick.id], available_minutes)
+            study_minutes = min(chunk_minutes, remaining[current_task.id], available_minutes)
             if study_minutes < min_session_minutes:
                 break
 
-            start = cursor
-            end = cursor + timedelta(minutes=study_minutes)
+            session_start = slot_cursor
+            session_end = slot_cursor + timedelta(minutes=study_minutes)
 
             sessions.append(
                 StudySession(
-                    task_id=pick.id,
-                    title=pick.title,
-                    start=start,
-                    end=end,
+                    task_id=current_task.id,
+                    title=current_task.title,
+                    start=session_start,
+                    end=session_end,
                     minutes=study_minutes,
                 )
             )
 
-            remaining[pick.id] -= study_minutes
-            cursor = end + timedelta(minutes=break_minutes)
+            remaining[current_task.id] -= study_minutes
+            slot_cursor = session_end + timedelta(minutes=break_minutes)
 
     return Plan(generated_at=now, sessions=sessions)
