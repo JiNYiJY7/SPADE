@@ -8,7 +8,7 @@ class Task(BaseModel):
     id: str
     title: str
     due: datetime
-    est_minutes: int
+    estimated_minutes: int
     remaining_minutes: int
     importance: int = Field(ge=1, le=5, default=3)
     subject: Optional[str] = None
