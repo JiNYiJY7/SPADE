@@ -18,8 +18,8 @@ def load_input_json(path: Path) -> dict:
 
 def print_ranked(tasks_sorted):
     print("\n=== Ranked Tasks ===")
-    for i, t in enumerate(tasks_sorted, 1):
-        print(f"{i}. {t.title} | due={t.due} | importance={t.importance} | remaining={t.remaining_minutes}min")
+    for index, task in enumerate(tasks_sorted, 1):
+        print(f"{index}. {task.title} | due={task.due} | importance={task.importance} | remaining={task.remaining_minutes}min")
 
 
 def print_plan(plan):
@@ -27,8 +27,8 @@ def print_plan(plan):
     if not plan.sessions:
         print("(No sessions scheduled)")
         return
-    for s in plan.sessions:
-        print(f"{s.start} -> {s.end} | {s.title} ({s.minutes} min)")
+    for session in plan.sessions:
+        print(f"{session.start} -> {session.end} | {session.title} ({session.minutes} min)")
 
 
 def print_reminders(reminders):
@@ -36,8 +36,8 @@ def print_reminders(reminders):
     if not reminders:
         print("(No reminders)")
         return
-    for r in reminders:
-        print(r)
+    for reminder in reminders:
+        print(reminder)
 
 
 def print_logs(memory: AgentMemory):
