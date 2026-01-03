@@ -6,18 +6,18 @@ from ..utils.time_utils import parse_iso
 
 
 def add_tasks(memory: AgentMemory, tasks: List[Dict[str, Any]]) -> None:
-    for t in tasks:
-        est = int(t["est_minutes"])
-        remaining = int(t.get("remaining_minutes", est))
+    for task_data in tasks:
+        estimated_minutes = int(task_data["est_minutes"])
+        remaining_minutes = int(task_data.get("remaining_minutes", estimated_minutes))
 
         task = Task(
-            id=str(t["id"]),
-            title=str(t["title"]),
-            due=parse_iso(t["due"]),
-            est_minutes=est,
-            remaining_minutes=remaining,
-            importance=int(t.get("importance", 3)),
-            subject=t.get("subject"),
+            id=str(task_data["id"]),
+            title=str(task_data["title"]),
+            due=parse_iso(task_data["due"]),
+            est_minutes=estimated_minutes,
+            remaining_minutes=remaining_minutes,
+            importance=int(task_data.get("importance", 3)),
+            subject=task_data.get("subject"),
         )
         memory.tasks[task.id] = task
     memory.log(f"Loaded tasks: {len(tasks)}")
@@ -25,7 +25,7 @@ def add_tasks(memory: AgentMemory, tasks: List[Dict[str, Any]]) -> None:
 
 def set_free_slots(memory: AgentMemory, slots: List[Dict[str, Any]]) -> None:
     memory.free_slots = [
-        TimeSlot(start=parse_iso(s["start"]), end=parse_iso(s["end"])) for s in slots
+        TimeSlot(start=parse_iso(slot_data["start"]), end=parse_iso(slot_data["end"])) for slot_data in slots
     ]
     memory.log(f"Loaded free slots: {len(slots)}")
 
