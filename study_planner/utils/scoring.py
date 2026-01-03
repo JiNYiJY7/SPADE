@@ -3,7 +3,7 @@ from datetime import datetime
 from ..models import Task
 
 
-def priority_score(task: Task, now: datetime) -> float:
+def priority_score(task: Task, current_time: datetime) -> float:
     """
     Higher score => higher priority.
     Factors:
@@ -11,7 +11,7 @@ def priority_score(task: Task, now: datetime) -> float:
     - Importance: 1..5 weight
     - Workload: remaining time (hours)
     """
-    hours_left = (task.due - now).total_seconds() / 3600.0
+    hours_left = (task.due - current_time).total_seconds() / 3600.0
 
     if hours_left <= 0:
         urgency = 9999.0
