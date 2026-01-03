@@ -90,12 +90,12 @@ class PriorityEvaluationBehaviour(OneShotBehaviour):
     async def run(self):
         """Evaluate and rank tasks by priority."""
         memory: AgentMemory = self.agent.memory
-        now: datetime = self.agent.reference_time
+        current_time: datetime = self.agent.reference_time
         
         memory.log("[PriorityEvaluationBehaviour] Starting priority evaluation")
         
         # Delegate to existing Phase 2 logic
-        ranked_tasks = rank_tasks(memory, now)
+        ranked_tasks = rank_tasks(memory, current_time)
         
         # Store ranked tasks for next behaviour
         self.agent.ranked_tasks = ranked_tasks
@@ -118,12 +118,12 @@ class SchedulePlanningBehaviour(OneShotBehaviour):
         """Build an optimized study plan."""
         memory: AgentMemory = self.agent.memory
         ranked_tasks = self.agent.ranked_tasks
-        now: datetime = self.agent.reference_time
+        current_time: datetime = self.agent.reference_time
         
         memory.log("[SchedulePlanningBehaviour] Starting schedule planning")
         
         # Delegate to existing Phase 2 logic
-        plan = build_plan(memory, ranked_tasks, now)
+        plan = build_plan(memory, ranked_tasks, current_time)
         
         memory.log("[SchedulePlanningBehaviour] Schedule planning complete")
         print(f"[AGENT] Generated study plan with {len(plan.sessions)} sessions")
@@ -144,7 +144,7 @@ class ReschedulingBehaviour(CyclicBehaviour):
     async def run(self):
         """Check for rescheduling needs periodically."""
         memory: AgentMemory = self.agent.memory
-        now: datetime = self.agent.reference_time
+        current_time: datetime = self.agent.reference_time
         
         # In production, this would check conditions and trigger reschedule
         # For demo, this is called manually when progress updates occur
@@ -152,7 +152,7 @@ class ReschedulingBehaviour(CyclicBehaviour):
             memory.log("[ReschedulingBehaviour] Rescheduling triggered")
             
             # Delegate to existing Phase 2 logic
-            plan = reschedule(memory, now)
+            plan = reschedule(memory, current_time)
             
             self.agent.trigger_reschedule = False
             memory.log("[ReschedulingBehaviour] Rescheduling complete")
@@ -172,11 +172,11 @@ class ReminderManagementBehaviour(CyclicBehaviour):
     async def run(self):
         """Generate reminders for all active tasks."""
         memory: AgentMemory = self.agent.memory
-        now: datetime = self.agent.reference_time
+        current_time: datetime = self.agent.reference_time
         
         # Rank tasks and generate reminders
-        ranked_tasks = rank_tasks(memory, now)
-        reminders = generate_reminders(ranked_tasks, now)
+        ranked_tasks = rank_tasks(memory, current_time)
+        reminders = generate_reminders(ranked_tasks, current_time)
         
         # Store reminders in agent state
         self.agent.current_reminders = reminders
