@@ -7,7 +7,7 @@ def test_scheduler_sessions_within_slot():
     current_time = datetime.fromisoformat("2026-01-02T10:00:00")
     task_list = [
         Task(id="A", title="Task A", due=datetime.fromisoformat("2026-01-03T10:00:00"),
-             est_minutes=120, remaining_minutes=120, importance=5)
+             estimated_minutes=120, remaining_minutes=120, importance=5)
     ]
     time_slots = [
         TimeSlot(
