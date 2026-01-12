@@ -26,7 +26,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any, Optional
 
-from .spade_agent import StudyPlannerAgent(Agent)
+from .spade_agent import StudyPlannerAgent
 from .utils.time_utils import parse_iso
 
 
