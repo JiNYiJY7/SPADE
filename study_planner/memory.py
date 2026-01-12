@@ -1,52 +1,40 @@
+"""
+Agent Memory Module
+
+Holds the internal state of the StudyPlannerAgent.
+Behaviours read/write to this memory to coordinate tasks, scheduling, and reminders.
+"""
+
 from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
-from .models import Task, TimeSlot, Plan
-
+from .models import Task, Plan
 
 @dataclass
 class AgentMemory:
     """
-    Centralized state container for the intelligent planning agent.
-
-    This class exists to:
-    - Store all mutable agent state in one place
-    - Enable clean separation between decision-making logic and data storage
-    - Provide a shared memory that different agent behaviours can read from
-      and write to without tight coupling
-
-    Using a dataclass simplifies initialization, improves readability,
-    and enforces a clear schema for agent state.
+    Shared memory for the StudyPlannerAgent.
+    
+    Attributes:
+        tasks: Dictionary mapping task IDs to Task objects.
+        free_slots: List of available TimeSlots for scheduling.
+        plan: Optional Plan object representing the current study plan.
+        history: List of log messages for tracking agent actions.
     """
-
-    # Tasks are stored in a dictionary keyed by task ID to allow:
-    # - Fast lookup and updates
-    # - Clear task identity across the system
-    # - Safe modification during rescheduling and progress tracking
     tasks: Dict[str, Task] = field(default_factory=dict)
-
-    # Free time slots represent when the agent is allowed to schedule work.
-    # A list is used to preserve chronological ordering and allow iteration.
-    free_slots: List[TimeSlot] = field(default_factory=list)
-
-    # The current execution plan is stored explicitly so that:
-    # - It can be reused without recomputation
-    # - Other components (UI, reminders, logs) can access it consistently
+    free_slots: List = field(default_factory=list)
     plan: Optional[Plan] = None
-
-    # History keeps a chronological log of agent decisions and actions.
-    # This supports transparency, debugging, and academic evaluation.
     history: List[str] = field(default_factory=list)
 
     def log(self, message: str) -> None:
         """
-        Record a human-readable message describing an agent action or decision.
+        Append a message to the agent's history log.
 
-        This method exists to:
-        - Provide traceability of the agent's internal reasoning
-        - Support debugging and validation of agent behaviour
-        - Enable explainabilit
+        Why:
+        - Behaviours use this to record actions and decisions.
+        - Provides a timeline of operations for debugging or display.
+        
+        Args:
+            message: String describing the action or event.
         """
-
-        # Append rather than overwrite to preserve the full decision timeline
         self.history.append(message)
