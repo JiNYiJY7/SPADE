@@ -44,7 +44,6 @@ def load_input_json(file_path: str) -> Dict[str, Any]:
 def get_default_input() -> Dict[str, Any]:
     """
     Provide default demo tasks and free slots when no input file is given.
-
     Why:
     - Ensures offline demo runs without external dependencies
     - Demonstrates a realistic academic scheduling scenario
