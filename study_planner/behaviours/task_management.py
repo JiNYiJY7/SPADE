@@ -36,7 +36,7 @@ def add_tasks(
             id=str(task_payload["id"]),
             title=str(task_payload["title"]),
             due=parse_iso(task_payload["due"]),
-            est_minutes=estimated_minutes,
+            estimated_minutes=estimated_minutes,
             remaining_minutes=remaining_minutes,
             importance=int(task_payload.get("importance", 3)),
             subject=task_payload.get("subject"),
