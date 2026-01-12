@@ -5,7 +5,7 @@ from ..models import Plan
 from ..utils.scheduler import plan_sessions
 
 
-def build_execution_plan(
+def build_plan(
     memory: AgentMemory,
     prioritized_tasks,
     current_time: datetime
