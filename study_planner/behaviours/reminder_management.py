@@ -35,7 +35,7 @@ def determine_reminder_priority(hours_until_due: float) -> str:
     return "INFO (every few days)"
 
 
-def generate_task_reminders(
+def generate_reminders(
     sorted_tasks: List[Task], current_time: datetime
 ) -> List[str]:
     """
