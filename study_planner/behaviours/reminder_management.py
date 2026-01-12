@@ -5,6 +5,10 @@ from ..models import Task
 
 
 def reminder_level(hours_left: float) -> str:
+    """
+    Determine the reminder urgency level based on the time left
+    before the task deadline.
+    """
     if hours_left <= 6:
         return "HIGH (every 30-60 min)"
     if hours_left <= 24:
