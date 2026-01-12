@@ -46,3 +46,7 @@ class AgentMemory:
         - Provide traceability of the agent's internal reasoning
         - Support debugging and validation of agent behaviour
         - Enable explainabilit
+        """
+
+        # Append rather than overwrite to preserve the full decision timeline
+        self.history.append(message)
