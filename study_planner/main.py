@@ -1,3 +1,16 @@
+"""
+Command-line entry point for the Smart Academic Planning Agent.
+
+This module simulates how an intelligent agent:
+- Loads task and availability data
+- Evaluates task priorities
+- Builds and updates a study plan
+- Generates reminders
+- Logs internal decision-making for transparency
+
+It is designed as a CLI interface to demonstrate the full agent workflow.
+"""
+
 from __future__ import annotations
 import argparse
 import json
@@ -5,95 +18,214 @@ from pathlib import Path
 from datetime import datetime
 
 from .memory import AgentMemory
-from .behaviours.task_management import add_tasks, set_free_slots, mark_progress
+from .behaviours.task_management import (
+    add_tasks,
+    set_free_slots,
+    mark_progress,
+)
 from .behaviours.priority_evaluation import rank_tasks
 from .behaviours.schedule_planning import build_plan
 from .behaviours.rescheduling import reschedule
 from .behaviours.reminder_management import generate_reminders
 
 
-def load_input_json(path: Path) -> dict:
-    return json.loads(path.read_text(encoding="utf-8"))
+def load_input_json(file_path: Path) -> dict:
+    """
+    Load task and scheduling input data from a JSON file.
+
+    This function exists to isolate file I/O logic from agent logic,
+    making the system easier to test and extend (e.g. API or UI input).
+    """
+
+    return json.loads(file_path.read_text(encoding="utf-8"))
 
 
-def print_ranked(tasks_sorted):
+def display_ranked_tasks(prioritized_tasks) -> None:
+    """
+    Display tasks in priority order for inspection and debugging.
+
+    This output allows users and evaluators to verify that
+    the priority evaluation logic behaves as expected.
+    """
+
     print("\n=== Ranked Tasks ===")
-    for index, task in enumerate(tasks_sorted, 1):
-        print(f"{index}. {task.title} | due={task.due} | importance={task.importance} | remaining={task.remaining_minutes}min")
+    for index, task in enumerate(prioritized_tasks, start=1):
+        print(
+            f"{index}. {task.title} | "
+            f"due={task.due} | "
+            f"importance={task.importance} | "
+            f"remaining={task.remaining_minutes} min"
+        )
 
 
-def print_plan(plan):
+def display_plan(execution_plan) -> None:
+    """
+    Display the generated study plan in a human-readable format.
+
+    This function exists to bridge internal scheduling logic
+    with user-facing output for validation and demonstration.
+    """
+
     print("\n=== Study Plan ===")
-    if not plan.sessions:
+
+    # Explicitly handle empty plans to avoid confusing output
+    if not execution_plan.sessions:
         print("(No sessions scheduled)")
         return
-    for session in plan.sessions:
-        print(f"{session.start} -> {session.end} | {session.title} ({session.minutes} min)")
+
+    for session in execution_plan.sessions:
+        print(
+            f"{session.start} -> {session.end} | "
+            f"{session.title} ({session.minutes} min)"
+        )
 
 
-def print_reminders(reminders):
+def display_reminders(reminder_messages) -> None:
+    """
+    Display generated reminders.
+
+    This output demonstrates how urgency-based logic
+    translates into actionable user notifications.
+    """
+
     print("\n=== Reminders ===")
-    if not reminders:
+
+    if not reminder_messages:
         print("(No reminders)")
         return
-    for reminder in reminders:
+
+    for reminder in reminder_messages:
         print(reminder)
 
 
-def print_logs(memory: AgentMemory):
+def display_agent_logs(memory: AgentMemory) -> None:
+    """
+    Display the agent's internal decision logs.
+
+    Logs exist to provide transparency, traceability,
+    and debugging insight into agent behaviour.
+    """
+
     print("\n=== Agent Logs ===")
-    for line in memory.history:
-        print(f"- {line}")
+    for log_entry in memory.history:
+        print(f"- {log_entry}")
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Smart Academic Planning Agent (Simulated)")
-    parser.add_argument("--input", type=str, default="", help="Path to input JSON")
-    parser.add_argument("--progress_task_id", type=str, default="", help="Task ID to mark progress")
-    parser.add_argument("--progress_minutes", type=int, default=0, help="Minutes completed for progress update")
-    parser.add_argument("--reschedule", action="store_true", help="Trigger rescheduling after updates")
+def main() -> None:
+    """
+    Main execution function for the Smart Academic Planning Agent.
+
+    This function orchestrates the entire agent lifecycle:
+    - Input parsing
+    - Memory initialization
+    - Task loading
+    - Planning and rescheduling
+    - Output generation
+    """
+
+    # Argument parsing enables flexible simulation without code changes
+    parser = argparse.ArgumentParser(
+        description="Smart Academic Planning Agent (Simulated)"
+    )
+    parser.add_argument(
+        "--input",
+        type=str,
+        default="",
+        help="Path to input JSON file",
+    )
+    parser.add_argument(
+        "--progress_task_id",
+        type=str,
+        default="",
+        help="Task ID to update progress for",
+    )
+    parser.add_argument(
+        "--progress_minutes",
+        type=int,
+        default=0,
+        help="Minutes completed for progress update",
+    )
+    parser.add_argument(
+        "--reschedule",
+        action="store_true",
+        help="Trigger rescheduling after progress update",
+    )
     args = parser.parse_args()
 
+    # Initialize agent memory to store tasks, plans, and logs
     memory = AgentMemory()
+
+    # Capture current time once to keep all decisions consistent
     current_time = datetime.now()
 
-    # Load data
+    # Load input data either from file or built-in demo data
     if args.input:
-        data = load_input_json(Path(args.input))
+        input_data = load_input_json(Path(args.input))
     else:
-        # Default demo data
-        data = {
+        # Default dataset allows the system to run without external files,
+        # useful for demos, testing, and grading
+        input_data = {
             "tasks": [
-                {"id": "A1", "title": "NLP Assignment", "due": "2026-01-05T23:59:00", "est_minutes": 300, "importance": 5},
-                {"id": "Q1", "title": "Quiz Revision", "due": "2026-01-04T18:00:00", "est_minutes": 120, "importance": 4},
+                {
+                    "id": "A1",
+                    "title": "NLP Assignment",
+                    "due": "2026-01-05T23:59:00",
+                    "est_minutes": 300,
+                    "importance": 5,
+                },
+                {
+                    "id": "Q1",
+                    "title": "Quiz Revision",
+                    "due": "2026-01-04T18:00:00",
+                    "est_minutes": 120,
+                    "importance": 4,
+                },
             ],
             "free_slots": [
-                {"start": "2026-01-02T20:00:00", "end": "2026-01-02T23:00:00"},
-                {"start": "2026-01-03T14:00:00", "end": "2026-01-03T18:00:00"},
+                {
+                    "start": "2026-01-02T20:00:00",
+                    "end": "2026-01-02T23:00:00",
+                },
+                {
+                    "start": "2026-01-03T14:00:00",
+                    "end": "2026-01-03T18:00:00",
+                },
             ],
         }
 
-    add_tasks(memory, data["tasks"])
-    set_free_slots(memory, data["free_slots"])
+    # Populate agent memory with tasks and availability
+    add_tasks(memory, input_data["tasks"])
+    set_free_slots(memory, input_data["free_slots"])
 
-    # Initial plan
-    tasks_sorted = rank_tasks(memory, current_time)
-    plan = build_plan(memory, tasks_sorted, current_time)
+    # Initial planning phase: evaluate priorities, then schedule
+    prioritized_tasks = rank_tasks(memory, current_time)
+    execution_plan = build_plan(memory, prioritized_tasks, current_time)
 
-    # Optional progress update
+    # Optional progress update simulates real-world user interaction
     if args.progress_task_id and args.progress_minutes > 0:
-        mark_progress(memory, args.progress_task_id, args.progress_minutes)
+        mark_progress(
+            memory,
+            args.progress_task_id,
+            args.progress_minutes,
+        )
+
+        # Rescheduling is optional to avoid unnecessary recomputation
         if args.reschedule:
-            plan = reschedule(memory, current_time)
-            tasks_sorted = rank_tasks(memory, current_time)
+            execution_plan = reschedule(memory, current_time)
+            prioritized_tasks = rank_tasks(memory, current_time)
 
-    # Output
-    print_ranked(tasks_sorted)
-    print_plan(plan)
-    reminders = generate_reminders(tasks_sorted, current_time)
-    print_reminders(reminders)
-    print_logs(memory)
+    # Output results for inspection and demonstration
+    display_ranked_tasks(prioritized_tasks)
+    display_plan(execution_plan)
+
+    reminder_messages = generate_reminders(
+        prioritized_tasks,
+        current_time,
+    )
+    display_reminders(reminder_messages)
+    display_agent_logs(memory)
 
 
+# Entry-point guard ensures this script only runs when executed directly
 if __name__ == "__main__":
     main()
