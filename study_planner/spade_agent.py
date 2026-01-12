@@ -33,7 +33,7 @@ from .models import Task, TimeSlot, Plan, StudySession
 from .behaviours.task_management import add_tasks, set_free_slots, mark_progress
 from .behaviours.priority_evaluation import rank_tasks
 from .behaviours.schedule_planning import build_plan
-from .behaviours.rescheduling import reschedule
+from .behaviours.rescheduling import reschedule_plan
 from .behaviours.reminder_management import generate_reminders
 
 
